@@ -1,0 +1,18 @@
+LTspice 26.0.1 for Windows
+Circuit: C:\Users\user\Downloads\rs232_chain.net
+Start Time: Fri Mar 20 18:28:06 2026
+C:\Users\user\Downloads\rs232_chain.net(5): This model has multiple definitions. (Note: If you wish to allow this, add ".OPTIONS ALLOW_AMBIGUOUS_MODELS" to your netlist.)
+Mn N003 N002 0 0 NMOS
+                 ^^^^
+C:\Users\user\Downloads\rs232_chain.net(6): This model has multiple definitions. (Note: If you wish to allow this, add ".OPTIONS ALLOW_AMBIGUOUS_MODELS" to your netlist.)
+Mp N003 N002 N001 N001 PMOS
+                       ^^^^
+C:\Users\user\Downloads\rs232_chain.net(10): This model has multiple definitions. (Note: If you wish to allow this, add ".OPTIONS ALLOW_AMBIGUOUS_MODELS" to your netlist.)
+Q1 NC_07 NC_08 NC_09 0 NPN
+                       ^^^
+C:\Users\user\Downloads\rs232_chain.net(11): This model has multiple definitions. (Note: If you wish to allow this, add ".OPTIONS ALLOW_AMBIGUOUS_MODELS" to your netlist.)
+Q2 NC_10 NC_11 NC_12 0 PNP
+                       ^^^
+C:\Users\user\Downloads\rs232_chain.net(7): No such node.
+B§Ers232 NC_01 NC_02 V=if(V(out)>2.5,10,-10)
+                            ^^^

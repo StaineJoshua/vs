@@ -1,0 +1,40 @@
+* Fully realistic multi-stage design
+
+* INPUT
+Vin IN 0 PULSE(0 5 0 1u 1u 5u 10u)
+
+* SUPPLIES
+Vdd Vdd 0 5
+Vpos Vp 0 10
+Vneg Vn 0 -10
+
+* CMOS INVERTER
+M1 OUT1 IN Vdd Vdd PMOS
+M2 OUT1 IN 0 0 NMOS
+
+.model NMOS NMOS (VTO=1 KP=120u)
+.model PMOS PMOS (VTO=-1 KP=60u)
+
+* RS232 PUSH-PULL DRIVER
+Q1 OUT2 OUT1 Vp NPN
+Q2 OUT2 OUT1 Vn PNP
+
+.model NPN NPN (BF=100)
+.model PNP PNP (BF=100)
+
+* Load for 50mA
+Rload1 OUT2 0 200
+
+* VOLTAGE DIVIDER
+R1 OUT2 OUT3 6.7k
+R2 OUT3 0 3.3k
+
+* BUFFER (EMITTER FOLLOWER)
+Q3 OUT4 OUT3 Vp NPN
+Q4 OUT4 OUT3 Vn PNP
+
+* Load for 30mA
+Rload2 OUT4 0 110
+
+.tran 50u
+.end
