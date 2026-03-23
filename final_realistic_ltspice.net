@@ -1,0 +1,45 @@
+* Input
+V1 IN 0 PULSE(0 5 0 1u 1u 5m 10m)
+
+* Supply
+VDD VDD 0 5
+
+* CMOS Inverter
+M1 INV_OUT IN VDD VDD PMOS
+M2 INV_OUT IN 0 0 NMOS
+
+.model NMOS NMOS (VTO=1 KP=120u)
+.model PMOS PMOS (VTO=-1 KP=50u)
+
+* RS232 Equivalent
+B1 RS232 0 V={IF(V(INV_OUT)>2.5,-10,10)}
+
+* Scaled voltage (safe)
+E1 SCALED 0 VALUE = { V(RS232)*0.33 }
+
+* --- STABILIZED PUSH-PULL STAGE ---
+
+* Base resistors (CRITICAL)
+RB1 SCALED B1 1k
+RB2 SCALED B2 1k
+
+* Transistors
+Q1 OUT B1 RS232 NPN
+Q2 OUT B2 0 PNP
+
+.model NPN NPN (BF=100)
+.model PNP PNP (BF=100)
+
+* Emitter resistors (VERY IMPORTANT)
+RE1 OUT RS232 1
+RE2 OUT 0 1
+
+* Load (~30mA)
+RL OUT 0 110
+
+* Small cap for convergence (optional but helps)
+C1 OUT 0 10p
+
+.tran 0 50m startup
+.options reltol=1e-3 abstol=1e-6 vntol=1e-6
+.end
