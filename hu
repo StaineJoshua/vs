@@ -1,0 +1,138 @@
+Version 4
+SHEET 1 880 680
+
+WIRE 96 64 32 64
+WIRE 192 64 96 64
+WIRE 32 112 32 64
+WIRE 192 128 192 64
+WIRE 96 160 96 64
+WIRE 192 224 192 192
+WIRE 32 256 32 192
+WIRE 96 256 96 224
+WIRE 192 256 192 224
+WIRE 32 320 32 256
+WIRE 96 320 96 256
+WIRE 192 320 192 256
+WIRE 96 400 96 320
+WIRE 192 400 192 320
+WIRE 96 480 96 400
+WIRE 192 480 192 400
+
+SYMBOL voltage 32 96 R0
+SYMATTR InstName Vin
+SYMATTR Value PULSE(0 5 0 1n 1n 5u 10u)
+
+SYMBOL voltage 192 96 R0
+SYMATTR InstName Vdd
+SYMATTR Value 5
+
+SYMBOL nmos 96 192 R0
+SYMATTR InstName M2
+SYMATTR Value NMOS
+
+SYMBOL pmos 96 96 R0
+SYMATTR InstName M1
+SYMATTR Value PMOS
+
+SYMBOL cap 192 192 R0
+SYMATTR InstName Cload
+SYMATTR Value 10p
+
+SYMBOL bv 192 288 R0
+SYMATTR InstName B1
+SYMATTR Value V=if(V(out)>2.5,10,-10)
+
+SYMBOL res 192 352 R0
+SYMATTR InstName Rrs
+SYMATTR Value 200
+
+SYMBOL res 96 352 R0
+SYMATTR InstName R1
+SYMATTR Value 6.8k
+
+SYMBOL res 96 416 R0
+SYMATTR InstName R2
+SYMATTR Value 3.3k
+
+SYMBOL e 192 416 R0
+SYMATTR InstName Ebuf
+SYMATTR Value 1
+
+SYMBOL res 192 480 R0
+SYMATTR InstName Rload
+SYMATTR Value 110
+
+SYMBOL gnd 32 320 R0
+SYMBOL gnd 192 480 R0
+
+TEXT 300 100 Left 2 !.model NMOS NMOS (LEVEL=1 VTO=0.7 KP=120u)
+TEXT 300 140 Left 2 !.model PMOS PMOS (LEVEL=1 VTO=-0.7 KP=50u)
+TEXT 300 180 Left 2 !.tran 0 50u
+
+FLAG 32 64 in
+FLAG 96 160 out
+FLAG 192 288 rs_out
+FLAG 96 384 mid
+FLAG 192 416 out_final
+FLAG 192 64 Vdd
+
+
+
+  1. INPUT SOURCE
+Vin (+) → node: in  
+Vin (−) → GND
+
+Set:
+
+PULSE(0 5 0 1n 1n 5u 10u)
+🔹 2. POWER SUPPLY
+Vdd (+) → node: Vdd  
+Vdd (−) → GND
+
+Value:
+
+5V
+🔷 🔁 3. CMOS INVERTER (CRITICAL)
+🟢 PMOS (M1)
+Source → Vdd  
+Drain  → out  
+Gate   → in  
+Body   → Vdd
+🔵 NMOS (M2)
+Drain  → out  
+Source → GND  
+Gate   → in  
+Body   → GND
+🔹 Add capacitor
+out → 10pF → GND
+🔷 ⚡ 4. RS232 STAGE (Behavioral)
+🔹 Behavioral source (B1)
+Positive node → rs_out  
+Negative node → GND
+
+Expression:
+
+V = if(V(out) > 2.5, 10, -10)
+🔹 Output resistor
+rs_out → 200Ω → GND
+🔷 🔻 5. VOLTAGE DIVIDER
+rs_out → R1 (6.8k) → mid → R2 (3.3k) → GND
+🔷 🔁 6. BUFFER (VERY IMPORTANT)
+
+Use VCVS (E element)
+
+Connections:
+Input +  → mid  
+Input −  → GND  
+Output + → out_final  
+Output − → GND  
+Gain = 1
+🔷 🔌 7. LOAD
+out_final → 110Ω → GND
+🔷 🧾 8. MODELS + SIMULATION
+
+Press S and paste:
+
+.model NMOS NMOS (LEVEL=1 VTO=0.7 KP=120u)
+.model PMOS PMOS (LEVEL=1 VTO=-0.7 KP=50u)
+.tran 0 50u
