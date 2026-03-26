@@ -1,0 +1,116 @@
+Version 4
+SHEET 1 1200 800
+
+* INPUT SOURCE
+SYMBOL voltage 64 160 R0
+SYMATTR InstName Vin
+SYMATTR Value PULSE(0 5 0 1n 1n 5u 10u)
+
+* SUPPLY
+SYMBOL voltage 64 64 R0
+SYMATTR InstName Vdd
+SYMATTR Value 5
+
+* CMOS INVERTER
+SYMBOL pmos 224 96 R0
+SYMATTR InstName M1
+SYMATTR Value PMOS
+
+SYMBOL nmos 224 224 R0
+SYMATTR InstName M2
+SYMATTR Value NMOS
+
+* LOAD CAP
+SYMBOL cap 320 192 R0
+SYMATTR InstName Cload
+SYMATTR Value 10p
+
+* RS232 BEHAVIORAL
+SYMBOL bv 480 192 R0
+SYMATTR InstName B1
+SYMATTR Value V=if(V(out)>2.5,10,-10)
+
+SYMBOL res 560 256 R0
+SYMATTR InstName Rrs
+SYMATTR Value 200
+
+* VOLTAGE DIVIDER
+SYMBOL res 640 160 R0
+SYMATTR InstName R1
+SYMATTR Value 6.8k
+
+SYMBOL res 640 256 R0
+SYMATTR InstName R2
+SYMATTR Value 3.3k
+
+* BUFFER
+SYMBOL e 800 192 R0
+SYMATTR InstName Ebuf
+SYMATTR Value 1
+
+* LOAD
+SYMBOL res 960 256 R0
+SYMATTR InstName Rload
+SYMATTR Value 110
+
+* GROUND
+SYMBOL gnd 64 256 R0
+SYMBOL gnd 224 320 R0
+SYMBOL gnd 560 320 R0
+SYMBOL gnd 640 320 R0
+SYMBOL gnd 960 320 R0
+
+* WIRES
+
+WIRE 64 128 64 96        ; Vin top
+WIRE 64 192 64 256       ; Vin to GND
+
+WIRE 64 32 64 0          ; Vdd
+WIRE 64 96 224 96        ; Vdd to PMOS source
+
+WIRE 64 128 224 160      ; input to gates
+WIRE 224 160 224 256     ; gate vertical
+
+WIRE 224 96 224 128      ; PMOS drain
+WIRE 224 224 224 192     ; NMOS drain
+
+WIRE 224 160 320 160     ; OUT NODE
+
+WIRE 320 160 320 192     ; to capacitor
+WIRE 320 224 320 256     ; cap to ground
+
+WIRE 320 160 480 160     ; to B1 input
+
+WIRE 480 160 480 192     ; B1
+WIRE 480 224 560 224     ; rs_out
+
+WIRE 560 224 560 256     ; Rrs
+WIRE 560 288 560 320     ; to ground
+
+WIRE 560 224 640 160     ; to divider
+
+WIRE 640 160 640 224     ; R1 to mid
+WIRE 640 224 640 256     ; R2
+
+WIRE 640 288 640 320     ; ground
+
+WIRE 640 224 800 160     ; mid to buffer input
+
+WIRE 800 160 800 192     ; Ebuf input
+WIRE 800 224 960 224     ; output
+
+WIRE 960 224 960 256     ; load
+WIRE 960 288 960 320     ; ground
+
+* LABELS
+FLAG 224 160 out
+FLAG 480 224 rs_out
+FLAG 640 224 mid
+FLAG 960 224 out_final
+FLAG 64 128 in
+FLAG 64 32 Vdd
+
+* MODELS + SIM
+TEXT 100 400 Left 2 !.model NMOS NMOS (LEVEL=1 VTO=0.7 KP=120u)
+TEXT 100 440 Left 2 !.model PMOS PMOS (LEVEL=1 VTO=-0.7 KP=50u)
+TEXT 100 480 Left 2 !.tran 0 50u
